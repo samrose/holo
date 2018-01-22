@@ -1,0 +1,2 @@
+alert_email: myemail@domain.com
+sendgrid_api_key: keygoeshere
