@@ -1,0 +1,8 @@
+- name: install monit
+  apt: pkg=monit state=installed update_cache=true
+
+- name: copy monitrc template (default on this command is to replace if remote is different than source)
+  template: src=monitrc.j2 dest=/etc/monit/monitrc owner=root mode=0600
+
+- name: monit reload
+  command: monit reload
