@@ -105,25 +105,25 @@ set mailserver smtp.sendgrid.net port 587
 ## Monit by default uses the following format for alerts if the the mail-format
 ## statement is missing::
 ## --8<--
-## set mail-format {
-##   from:    monit@$HOST
-##   subject: monit alert --  $EVENT $SERVICE
-##   message: $EVENT Service $SERVICE
-##                 Date:        $DATE
-##                 Action:      $ACTION
-##                 Host:        $HOST
-##                 Description: $DESCRIPTION
-##
-##            Your faithful employee,
-##            Monit
-## }
+set mail-format {
+     from:    monit@$HOST
+     subject: monit alert --  $EVENT $SERVICE
+     message: $EVENT Service $SERVICE
+                   Date:        $DATE
+                   Action:      $ACTION
+                   Host:        $HOST
+                   Description: $DESCRIPTION
+
+              Your faithful employee,
+              Monit
+   }
 ## --8<--
 ##
 ## You can override this message format or parts of it, such as subject
 ## or sender using the MAIL-FORMAT statement. Macros such as $DATE, etc.
 ## are expanded at runtime. For example, to override the sender, use:
 #
-set mail-format { from: monit@foo.bar }
+#set mail-format { from: monit@foo.bar }
 #
 #
 ## You can set alert recipients whom will receive alerts if/when a
@@ -160,11 +160,12 @@ set httpd port 2812 and
 ## performed should a test fail.
 #
 check system $HOST
-    if loadavg (1min) > 4 then alert
-    if loadavg (5min) > 2 then alert
-    if cpu usage > 70% for 2 cycles then alert
-    if memory usage > 55% then alert
-    if swap usage > 10% then alert
+    if loadavg (1min) > 4 then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
+    if loadavg (5min) > 2 then alert and  exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
+    if cpu usage > 70% for 2 cycles then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
+    if memory usage > 55% then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
+    if swap usage > 10% then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
+
 
 #
 ## Check if a file exists, checksum, permissions, uid and gid. In addition

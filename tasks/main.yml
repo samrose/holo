@@ -4,5 +4,8 @@
 - name: copy monitrc template (default on this command is to replace if remote is different than source)
   template: src=monitrc.j2 dest=/etc/monit/monitrc owner=root mode=0600
 
+- name: copy mattermost alert to /usr/local/bin
+  copy: src=files/mm-notify.py dest=/usr/local/bin/mm-notify.py owner=root mode=0600
+
 - name: monit reload
   command: monit reload

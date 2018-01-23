@@ -1,2 +1,6 @@
 alert_email: myemail@domain.com
 sendgrid_api_key: keygoeshere
+mattermost_token: tokenhere
+mattermost_host: mydomainwithnohttpinfront.com
+mattermost_username: username_that_posts_alerts
+mattermost_channel: channel
