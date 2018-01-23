@@ -61,7 +61,8 @@ def make_data(args):
                "Host affected: **{host}**\n" \
                "Service affected: **{service}**\n" \
                "Details: {details}" \
-               .format(event=os.environ['MONIT_EVENT'],
+               .format(action=os.environ['MONIT_ACTION'],
+                       event=os.environ['MONIT_EVENT'],
                        host=os.environ['MONIT_HOST'],
                        service=os.environ['MONIT_SERVICE'],
                        details=os.environ['MONIT_DESCRIPTION'])

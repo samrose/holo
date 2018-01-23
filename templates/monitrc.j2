@@ -160,11 +160,26 @@ set httpd port 2812 and
 ## performed should a test fail.
 #
 check system $HOST
-    if loadavg (1min) > 4 then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
-    if loadavg (5min) > 2 then alert and  exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
-    if cpu usage > 70% for 2 cycles then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
-    if memory usage > 55% then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
-    if swap usage > 10% then alert and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_ACTION"'"
+    if loadavg (1min) > 4
+      then alert
+      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
+      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+    if loadavg (5min) > 2
+      then alert
+      and  exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
+      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+    if cpu usage > 70% for 2 cycles
+      then alert
+      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
+      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+    if memory usage > 55%
+      then alert
+      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
+      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+    if swap usage > 10%
+      then alert
+      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
+      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
 
 
 #

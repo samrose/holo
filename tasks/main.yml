@@ -9,3 +9,12 @@
 
 - name: monit reload
   command: monit reload
+
+- name: install pip for python 3 in ubuntu 16.04
+  apt: pkg=python3-setuptools state=installed update_cache=true cache_valid_time=3600
+
+- name: run install for pip
+  command: easy_install3 pip
+
+- name: install twilio
+  pip: name=twilio

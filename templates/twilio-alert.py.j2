@@ -1,0 +1,51 @@
+# /usr/bin/env python
+import argparse
+import json
+from twilio.rest import Client
+
+VERSION = "0.0.1
+
+
+def parse():
+    parser = argparse.ArgumentParser(description='Sends alerts from monit to SMS via twilio')
+    parser.add_argument('--destination', help='Phone number formatted as +15555551212')
+    parser.add_argument('--notificationtype', help='Optional Notification Type',
+                        default='none')
+    parser.add_argument('--version', action='version',
+                        version='% (prog)s {version}'.format(version=VERSION))
+    args = parser.parse_args()
+    return args
+
+def make_data(args):
+    template = "**{action}**\n" \
+               "**{event}**\n\n" \
+               "Host affected: **{host}**\n" \
+               "Service affected: **{service}**\n" \
+               "Details: {details}" \
+               .format(action=os.environ['MONIT_ACTION'],
+                       event=os.environ['MONIT_EVENT'],
+                       host=os.environ['MONIT_HOST'],
+                       service=os.environ['MONIT_SERVICE'],
+                       details=os.environ['MONIT_DESCRIPTION'])
+
+
+# Find these values at https://twilio.com/user/account
+def request(args,data):
+    account_sid = "{{ twilio_account_sid }}"
+    auth_token = "{{ twilio_auth_token }}"
+
+    client = Client(account_sid, auth_token)
+
+    message = client.api.account.messages.create(
+        to=args.destination,
+        from_="{{ twilio_from_number }}",
+        body=data_temp)
+    return message
+
+
+if __name__ == "__main__":
+    args = parse()
+    #data = make_data(args)
+    data_temp = "FOUR SCORE AND SEVEN YEARS AGO"
+    response = request(args,data_temp)
+    print(response.sid)
