@@ -74,7 +74,7 @@
 # port 25 - it is possible to override this with the PORT option.
 #
 set mailserver smtp.sendgrid.net port 587
-   username "apikey" password '{{ sendgrid_api_key }}'
+   username "apikey" password {{ sendgrid_api_key }}
    using TLSV1 with timeout 30 seconds
 #
 #
@@ -130,12 +130,12 @@ set mail-format {
 ## service defined in this file has errors. Alerts may be restricted on
 ## events by using a filter as in the second example below.
 #
-set alert '{{ alert_email }}'                       # receive all alerts
+set alert {{ alert_email }}                       # receive all alerts
 #
 ## Do not alert when Monit starts, stops or performs a user initiated action.
 ## This filter is recommended to avoid getting alerts for trivial cases.
 #
-set alert '{{ alert_email }}' not on { instance, action }
+set alert {{ alert_email }} not on { instance, action }
 #
 #
 ## Monit has an embedded HTTP interface which can be used to view status of
@@ -161,27 +161,21 @@ set httpd port 2812 and
 #
 check system $HOST
     if loadavg (1min) > 4
-      then alert
-      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
-      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+      then exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype $MONIT_EVENT' \
+      && /bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}'"
     if loadavg (5min) > 2
-      then alert
-      and  exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
-      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+      then exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"' \
+      && /bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}'"
     if cpu usage > 70% for 2 cycles
-      then alert
-      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
-      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+      then exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"' \
+      && /bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}'"
     if memory usage > 55%
-      then alert
-      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
-      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
+      then exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"' \
+      && /bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}'"
     if swap usage > 10%
-      then alert
-      and exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"'"
-      and exec "/bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}
-
-
+      then exec "/bin/bash -c '/usr/local/bin/mm-notify.py --url https://{{ mattermost_host }}/hooks/{{ mattermost_token}} --username {{ mattermost_username}} --channel {{ mattermost_channel}} --notificationtype "$MONIT_EVENT"' \
+      && /bin/bash -c '/usr/bin/python3 twilio-alert.py --destination {{ twilio_destination_number}}'"
+      
 #
 ## Check if a file exists, checksum, permissions, uid and gid. In addition
 ## to alert recipients in the global section, customized alert can be sent to
@@ -212,7 +206,7 @@ check system $HOST
 #  check process apache with pidfile /usr/local/apache/logs/httpd.pid
 #    start program = "/etc/init.d/httpd start" with timeout 60 seconds
 #    stop program  = "/etc/init.d/httpd stop"
-#    if cpu > 60% for 2 cycles then alert
+#    if cpu > 60% for 2 cycles
 #    if cpu > 80% for 5 cycles then restart
 #    if totalmem > 200.0 MB for 5 cycles then restart
 #    if children > 250 then restart
@@ -237,9 +231,9 @@ check system $HOST
 #    if failed permission 660 then unmonitor
 #    if failed uid root then unmonitor
 #    if failed gid disk then unmonitor
-#    if space usage > 80% for 5 times within 15 cycles then alert
+#    if space usage > 80% for 5 times within 15 cycles
 #    if space usage > 99% then stop
-#    if inode usage > 30000 then alert
+#    if inode usage > 30000
 #    if inode usage > 99% then stop
 #    group server
 #
@@ -249,10 +243,10 @@ check system $HOST
 ## if the file size exceed a given limit, execute a script
 #
 #  check file database with path /data/mydatabase.db
-#    if failed permission 700 then alert
-#    if failed uid data then alert
-#    if failed gid data then alert
-#    if timestamp > 15 minutes then alert
+#    if failed permission 700
+#    if failed uid data
+#    if failed gid data
+#    if timestamp > 15 minutes
 #    if size > 100 MB then exec "/my/cleanup/script" as uid dba and gid dba
 #
 #
@@ -271,28 +265,28 @@ check system $HOST
 ## connection to a port and an application level network check is performed.
 #
 #  check host myserver with address 192.168.1.1
-#    if failed ping then alert
-#    if failed port 3306 protocol mysql with timeout 15 seconds then alert
+#    if failed ping
+#    if failed port 3306 protocol mysql with timeout 15 seconds
 #    if failed port 80 protocol http
 #       and request /some/path with content = "a string"
-#    then alert
+#
 #
 #
 ## Check a network link status (up/down), link capacity changes, saturation
 ## and bandwidth usage.
 #
 #  check network public with interface eth0
-#    if failed link then alert
-#    if changed link then alert
-#    if saturation > 90% then alert
-#    if download > 10 MB/s then alert
-#    if total upload > 1 GB in last hour then alert
+#    if failed link
+#    if changed link
+#    if saturation > 90%
+#    if download > 10 MB/s
+#    if total upload > 1 GB in last hour
 #
 #
 ## Check custom program status output.
 #
 #  check program myscript with path /usr/local/bin/myscript.sh
-#    if status != 0 then alert
+#    if status != 0
 #
 #
 ###############################################################################
@@ -302,6 +296,6 @@ check system $HOST
 ## It is possible to include additional configuration parts from other files or
 ## directories.
 #
-   include /etc/monit/conf.d/*
-   include /etc/monit/conf-enabled/*
+#   include /etc/monit/conf.d/*
+#   include /etc/monit/conf-enabled/*
 #
