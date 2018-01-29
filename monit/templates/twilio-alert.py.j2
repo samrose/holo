@@ -3,7 +3,7 @@ import argparse
 import json
 from twilio.rest import Client
 
-VERSION = "0.0.1
+VERSION = "0.0.1"
 
 
 def parse():
@@ -27,6 +27,7 @@ def make_data(args):
                        host=os.environ['MONIT_HOST'],
                        service=os.environ['MONIT_SERVICE'],
                        details=os.environ['MONIT_DESCRIPTION'])
+    return template
 
 
 # Find these values at https://twilio.com/user/account
@@ -39,13 +40,13 @@ def request(args,data):
     message = client.api.account.messages.create(
         to=args.destination,
         from_="{{ twilio_from_number }}",
-        body=data_temp)
+        body=data)
     return message
 
 
 if __name__ == "__main__":
     args = parse()
-    #data = make_data(args)
-    data_temp = "FOUR SCORE AND SEVEN YEARS AGO"
-    response = request(args,data_temp)
+    data = make_data(args)
+    #data_temp = "FOUR SCORE AND SEVEN YEARS AGO"
+    response = request(args,data)
     print(response.sid)
