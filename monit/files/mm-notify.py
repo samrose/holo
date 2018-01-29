@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 # Copyright (c) 2017 Maxim Odinintsev
 #
@@ -26,14 +26,9 @@
 
 import argparse
 import json
-try:
-    # python2
-    import urllib2
-    from urllib import urlencode
-except ModuleNotFoundError:
-    # python3
-    from urllib.parse import urlencode
-    import urllib.request as urllib2
+# python3
+from urllib.parse import urlencode
+import urllib.request as urllib2
 import os
 
 VERSION = "0.0.1"
