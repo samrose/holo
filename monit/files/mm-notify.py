@@ -24,85 +24,100 @@
 # THE SOFTWARE.
 # Origin source of this file https://github.com/PinGwynn/mmonit-mattermost/commit/a849f2247e37d8e710b3f98d43d7a9dfd29446a6
 
-import argparse
-import json
-# python3
-from urllib.parse import urlencode
-import urllib.request as urllib2
+# import argparse
+# import json
+# # python3
+# from urllib.parse import urlencode
+# import urllib.request as urllib2
+# import os
+#
+# VERSION = "0.0.1"
+#
+#
+# def parse():
+#     parser = argparse.ArgumentParser(description='Sends alerts to Mattermost')
+#     parser.add_argument('--url', help='Incoming Webhook URL', required=True)
+#     parser.add_argument('--channel', help='Channel to notify')
+#     parser.add_argument('--username', help='Username to notify as',
+#                         default='m/monit notify')
+#     parser.add_argument('--iconurl', help='URL of icon to use for username',
+#                         default='https://mmonit.com/monit/img/logo.png')  # noqa
+#     parser.add_argument('--notificationtype', help='Notification Type',
+#                         default='none')
+#     parser.add_argument('--version', action='version',
+#                         version='% (prog)s {version}'.format(version=VERSION))
+#     args = parser.parse_args()
+#     return args
+#
+#
+# def make_data(args):
+#     template = "**{action}**\n" \
+#                "**{event}**\n\n" \
+#                "Host affected: **{host}**\n" \
+#                "Service affected: **{service}**\n" \
+#                "Details: {details}" \
+#                .format(action=os.environ['ACTION'],
+#                        event=os.environ['EVENT'],
+#                        host=os.environ['HOST'],
+#                        service=os.environ['SERVICE'],
+#                        details=os.environ['DESCRIPTION'])
+#
+#     # Emojis
+#     #print(args.notificationtype.lower())
+#     if args.notificationtype.lower() == "alert":
+#         EMOJI = ":sos: "
+#     elif args.notificationtype.lower() == "stop":
+#         EMOJI = ":red_circle: "
+#     elif args.notificationtype.lower() == "start":
+#         EMOJI = ":white_check_mark: "
+#     elif args.notificationtype.lower() == "restart":
+#         EMOJI = ":arrows_counterclockwise: "
+#     elif args.notificationtype.lower() == "exec":
+#         EMOJI = ":interrobang: "
+#     elif args.notificationtype.lower() == "unmonitor":
+#         EMOJI = ":heavy_exclamation_mark: "
+#     else:
+#         EMOJI = ""
+#
+#     text = EMOJI + template.format(**vars(args))
+#
+#     payload = {
+#         "username": args.username,
+#         "icon_url": args.iconurl,
+#         "text": text
+#     }
+#
+#     if args.channel:
+#         payload["channel"] = args.channel
+#
+#     data = urlencode({'payload': json.dumps(payload)})
+#     return data
+#
+#
+# def request(url, data):
+#     binary_data = data.encode('ascii')
+#     req = urllib2.Request(url, binary_data)
+#     response = urllib2.urlopen(req)
+#     return response.read()
+#
+#
+# if __name__ == "__main__":
+#     args = parse()
+#     data = make_data(args)
+#     response = request(args.url, data)
+
 import os
+action = os.environ['ACTION']
+event = os.environ['EVENT']
+host = os.environ['HOST']
+service = os.environ['SERVICE']
+details = os.environ['DESCRIPTION']
 
-VERSION = "0.0.1"
+filename = '/monit_bot'
 
-
-def parse():
-    parser = argparse.ArgumentParser(description='Sends alerts to Mattermost')
-    parser.add_argument('--url', help='Incoming Webhook URL', required=True)
-    parser.add_argument('--channel', help='Channel to notify')
-    parser.add_argument('--username', help='Username to notify as',
-                        default='m/monit notify')
-    parser.add_argument('--iconurl', help='URL of icon to use for username',
-                        default='https://mmonit.com/monit/img/logo.png')  # noqa
-    parser.add_argument('--notificationtype', help='Notification Type',
-                        default='none')
-    parser.add_argument('--version', action='version',
-                        version='% (prog)s {version}'.format(version=VERSION))
-    args = parser.parse_args()
-    return args
-
-
-def make_data(args):
-    template = "**{action}**\n" \
-               "**{event}**\n\n" \
-               "Host affected: **{host}**\n" \
-               "Service affected: **{service}**\n" \
-               "Details: {details}" \
-               .format(action=os.environ['MONIT_ACTION'],
-                       event=os.environ['MONIT_EVENT'],
-                       host=os.environ['MONIT_HOST'],
-                       service=os.environ['MONIT_SERVICE'],
-                       details=os.environ['MONIT_DESCRIPTION'])
-
-    # Emojis
-    print(args.notificationtype.lower())
-    if args.notificationtype.lower() == "alert":
-        EMOJI = ":sos: "
-    elif args.notificationtype.lower() == "stop":
-        EMOJI = ":red_circle: "
-    elif args.notificationtype.lower() == "start":
-        EMOJI = ":white_check_mark: "
-    elif args.notificationtype.lower() == "restart":
-        EMOJI = ":arrows_counterclockwise: "
-    elif args.notificationtype.lower() == "exec":
-        EMOJI = ":interrobang: "
-    elif args.notificationtype.lower() == "unmonitor":
-        EMOJI = ":heavy_exclamation_mark: "
-    else:
-        EMOJI = ""
-
-    text = EMOJI + template.format(**vars(args))
-
-    payload = {
-        "username": args.username,
-        "icon_url": args.iconurl,
-        "text": text
-    }
-
-    if args.channel:
-        payload["channel"] = args.channel
-
-    data = urlencode({'payload': json.dumps(payload)})
-    return data
-
-
-def request(url, data):
-    binary_data = data.encode('ascii')
-    req = urllib2.Request(url, binary_data)
-    response = urllib2.urlopen(req)
-    return response.read()
-
-
-if __name__ == "__main__":
-    args = parse()
-    data = make_data(args)
-    response = request(args.url, data)
-    print(response)
+with open(filename, 'a') as out:
+    out.write(action + '\n')
+    out.write(event + '\n')
+    out.write(host + '\n')
+    out.write(service + '\n')
+    out.write(details + '\n')

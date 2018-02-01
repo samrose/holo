@@ -22,11 +22,11 @@ def make_data(args):
                "Host affected: **{host}**\n" \
                "Service affected: **{service}**\n" \
                "Details: {details}" \
-               .format(action=os.environ['MONIT_ACTION'],
-                       event=os.environ['MONIT_EVENT'],
-                       host=os.environ['MONIT_HOST'],
-                       service=os.environ['MONIT_SERVICE'],
-                       details=os.environ['MONIT_DESCRIPTION'])
+               .format(action=os.environ['ACTION'],
+                       event=os.environ['EVENT'],
+                       host=os.environ['HOST'],
+                       service=os.environ['SERVICE'],
+                       details=os.environ['DESCRIPTION'])
     return template
 
 
@@ -49,4 +49,4 @@ if __name__ == "__main__":
     data = make_data(args)
     #data_temp = "FOUR SCORE AND SEVEN YEARS AGO"
     response = request(args,data)
-    print(response.sid)
+    #print(response.sid)

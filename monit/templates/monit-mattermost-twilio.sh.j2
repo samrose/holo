@@ -1,0 +1,9 @@
+#!/bin/sh
+/usr/bin/curl \
+-i -X POST \
+--data-urlencode payload="{ \"channel\": \"{{ mattermost_channel }}\", \"username\": \"monit_bot\", \"text\": \"HOST: $MONIT_HOST \n SERVICE: $MONIT_SERVICE \n DESCRIPTION: $MONIT_DESCRIPTION\" }" \
+https://{{ mattermost_host }}/hooks/{{ mattermost_token }}; \
+curl -X POST -F "Body=\"HOST: $MONIT_HOST SERVICE: $MONIT_SERVICE DESCRIPTION: $MONIT_DESCRIPTION\"" \
+    -F "From={{ twilio_from_number }}" -F "To={{ twilio_destination_number }}" \
+    "https://api.twilio.com/2010-04-01/Accounts/{{ twilio_account_sid }}/Messages" \
+    -u "{{ twilio_account_sid }}:{{ twilio_auth_token }}"
