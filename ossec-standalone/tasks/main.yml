@@ -1,0 +1,83 @@
+---
+
+- name: Include OS specific variables
+  include_vars: "{{ ansible_os_family }}.yml"
+
+### RedHat - Add Repo
+- name: Add atomic repository
+  template: src=atomic.repo.j2
+            dest=/etc/yum.repos.d/atomic.repo
+            owner=root
+            group=root
+            mode=0644
+  when: ansible_os_family == 'RedHat'
+
+# https://www.atomicorp.com/RPM-GPG-KEY.art.txt
+- name: Add atomic GPG key
+  copy: src=RPM-GPG-KEY.art.txt
+        dest=/etc/pki/rpm-gpg/RPM-GPG-KEY.art.txt
+        owner=root
+        group=root
+        mode=0644
+  when: ansible_os_family == 'RedHat'
+
+### Debian - Add Repo
+- name: Install python-apt, a requirement for apt_repository
+  apt:  name=python-apt
+        state=latest
+  when: ansible_os_family == 'Debian'
+
+- name: Add ossec GPG key
+  apt_key: url='https://www.atomicorp.com/RPM-GPG-KEY.atomicorp.txt'
+           state=present
+  when: ansible_os_family == 'Debian'
+
+- name: Add ossec apt repository
+  apt_repository: repo='deb https://updates.atomicorp.com/channels/atomic/ubuntu xenial main'
+                  state=present
+  when: ansible_os_family == 'Debian'
+
+### RedHat - Install OSSEC
+- name: Install ossec server
+  yum: name={{ pkg_name }}
+       state=latest
+  notify:
+    - Initialize ossec
+  when: ansible_os_family == 'RedHat'
+
+### Debian - Install OSSEC
+- name: Install ossec server
+  apt: name={{ pkg_name }}
+       state=latest
+  notify:
+    - Initialize ossec
+  when: ansible_os_family == 'Debian'
+
+### Configure OSSEC
+- name: Set ossec config
+  template: src=ossec-server.conf.j2
+            dest=/var/ossec/etc/ossec-server.conf
+  notify:
+    - Restart ossec
+  when: ansible_os_family == 'RedHat'
+
+- name: Set ossec config
+  template: src=ossec-server.conf.j2
+            dest=/var/ossec/etc/ossec.conf
+  notify:
+    - Restart ossec
+  when: ansible_os_family == 'Debian'
+
+- name: Copy local rules
+  copy: src=local_rules.xml
+        dest=/var/ossec/rules
+
+- name: Ensure ossec is running and enabled at start up
+  service: name={{ item }}
+           state=started
+           enabled=yes
+  with_items:
+    - "{{ service_name }}"
+
+- name: copy testfile
+  copy: src=files/testfile dest=/testfile owner=root mode=0755

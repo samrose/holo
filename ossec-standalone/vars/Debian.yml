@@ -1,0 +1,4 @@
+pkg_name: ossec-hids-server
+service_name: ossec
+admin_email_addresses:
+  - my@email.com
