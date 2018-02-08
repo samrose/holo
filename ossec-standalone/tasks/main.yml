@@ -80,4 +80,6 @@
     - "{{ service_name }}"
 
 - name: copy testfile
-  template: src=ossec-mm.sh.j2 dest=/var/ossec/active-response/bin/ossec-mm.sh owner=root mode=0755
+  template: src=ossec-mm.sh.j2 dest=/var/ossec/active-response/bin/ossec-mm.sh owner=root group=ossec mode=0755
+  notify:
+    - Restart ossec
