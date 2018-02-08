@@ -55,13 +55,7 @@
     <description>List of rules to be ignored.</description>
   </rule>
   -->
-  <rule id="510011" level="10">
-    <if_sid>550</if_sid>
-    <match>/testfile</match>
-    <description>testfile has been modified</description>
-  </rule>
-
-</group> <!-- SYSLOG,LOCAL -->
+ <!-- SYSLOG,LOCAL -->
 
 
 <!-- EOF -->

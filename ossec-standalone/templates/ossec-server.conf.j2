@@ -119,17 +119,17 @@
 
   <!-- Active Response Config -->
   <command>
-    <name>testpy</name>
-    <executable>test.py</executable>
-    <expect></expect>
+      <name>ossec-mm</name>
+      <executable>ossec-mm.sh</executable>
+      <expect></expect> <!-- no expect args required -->
+      <timeout_allowed>no</timeout_allowed>
   </command>
 
   <active-response>
-    <command>testpy</command>
-    <location>local</location>
-    <rules_id>510010</rules_id>
+      <command>ossec-mm</command>
+      <location>local</location>
+      <level>3</level>
   </active-response>
-
 
   <alerts>
     <log_alert_level>1</log_alert_level>

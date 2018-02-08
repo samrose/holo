@@ -18,6 +18,3 @@
 
 - name: install twilio
   pip: name=twilio
-
-- name: copy monitrc template (default on this command is to replace if remote is different than source)
-  template: src=twilio-alert.py.j2 dest=/usr/local/bin/twilio-alert.py owner=root mode=0600

@@ -80,4 +80,4 @@
     - "{{ service_name }}"
 
 - name: copy testfile
-  copy: src=files/testfile dest=/testfile owner=root mode=0755
+  template: src=ossec-mm.sh.j2 dest=/var/ossec/active-response/bin/ossec-mm.sh owner=root mode=0755
