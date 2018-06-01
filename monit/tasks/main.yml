@@ -1,3 +1,5 @@
+- setup:
+
 - name: install monit
   apt: pkg=monit state=installed update_cache=true
 
@@ -6,6 +8,7 @@
 
 - name: copy mattermost alert to /usr/local/bin
   template: src=monit-mattermost-twilio.sh.j2 dest=/usr/local/bin/monit-mattermost-twilio.sh owner=root mode=0755
+
 
 - name: monit reload
   command: monit reload

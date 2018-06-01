@@ -146,10 +146,10 @@ set alert {{ alert_email }} not on { instance, action }
 ## commands to a running Monit daemon. See the Monit Wiki if you want to
 ## enable SSL for the HTTP interface.
 #
-set httpd port 2812 and
-     use address localhost  # only accept connection from localhost
-     allow localhost        # allow localhost to connect to the server and
-     allow admin:monit      # require user 'admin' with password 'monit'
+#set httpd port 2812 and
+#     use address localhost  # only accept connection from localhost
+#     allow localhost        # allow localhost to connect to the server and
+#     allow admin:monit      # require user 'admin' with password 'monit'
 #
 ###############################################################################
 ## Services
@@ -160,11 +160,15 @@ set httpd port 2812 and
 ## performed should a test fail.
 #
 check system $HOST
-    if loadavg (1min) > 4 then exec /usr/local/bin/monit-mattermost-twilio.sh
-    if cpu usage > 70% for 2 cycles then exec /usr/local/bin/monit-mattermost-twilio.sh
-    if loadavg (5min) > 2 then exec /usr/local/bin/monit-mattermost-twilio.sh
-    if memory usage > 55% then exec /usr/local/bin/monit-mattermost-twilio.sh
-    if swap usage > 10% then exec /usr/local/bin/monit-mattermost-twilio.sh
+    if loadavg (1min) > 4 then alert
+    if cpu usage > 70% for 2 cycles then alert
+    if loadavg (5min) > 2 then alert
+    if memory usage > 55% then alert
+    if swap usage > 10% then alert
+
+check file ssh_logins with path /var/log/auth.log
+    if match "Accepted publickey" then alert
+    if match "session closed for" then alert
 
 #
 ## Check if a file exists, checksum, permissions, uid and gid. In addition
